@@ -203,8 +203,8 @@ async function generateUserRoast(userMessages, userName) {
         const prompt = `Below are ${userMessages.length} messages from a WhatsApp user named "${userName}".
 Create a brutal, savage, dark humor roast specifically targeting this user based on their messages.
 Focus on their writing style, word choices, conversation patterns, interests, and any embarrassing or cringeworthy things they've said.
-Make it truly brutal but still funny - like a comedy roast show. Include specific references to their messages.
-Keep it edgy but not truly offensive - dark humor that people can laugh at.
+Make it truly brutal - like a comedy roast show..
+Keep it edgy - dark humor that people can laugh at. Roast should be under only 50-80 words short but hilarious.
 
 USER MESSAGES:
 ${formattedMessages}
@@ -219,9 +219,9 @@ BRUTAL PERSONALIZED ROAST OF ${userName}:`;
                     content: prompt
                 }
             ],
-            model: "llama3-8b-8192",
-            temperature: 0.9,
-            max_tokens: 1000,
+            model: "gemma2-9b-it",
+            temperature: 0.8,
+            max_tokens: 512,
             top_p: 0.95
         });
 
