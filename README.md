@@ -14,6 +14,10 @@ This guide will help you set up and run the WhatsApp Group Bot by following a fe
 ## 🚀 Getting Started
 
 ### 1. Run `group_id_finder.js`
+```bash
+npm install whatsapp-web.js qrcode-terminal groq-sdk
+```
+
 
 ```bash
 node group_id_finder.js
