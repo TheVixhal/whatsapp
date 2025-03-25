@@ -1,13 +1,13 @@
 {
   "name": "whatsapp",
   "version": "1.0.0",
-  "main": "what.js",
+  "description": "Whatsapp Bot",
+  "main": "group_id_finder.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
-  "description": "",
   "dependencies": {
     "groq-sdk": "^0.17.0",
     "qrcode-terminal": "^0.12.0",
