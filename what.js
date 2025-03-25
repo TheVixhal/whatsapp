@@ -2,12 +2,12 @@ const { Client, LocalAuth, MessageMedia } = require('whatsapp-web.js');
 const qrcode = require('qrcode-terminal');
 const { Groq } = require('groq-sdk');
 
-// Initialize the Groq client with your API key
+
 const groq = new Groq({
-    apiKey: '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'  // Replace with your actual Groq API key
+    apiKey: 'api-key-daalo-idhar-groq-ki'  // Replace with your actual Groq API key
 });
 
-// Initialize the WhatsApp client
+
 const client = new Client({
     authStrategy: new LocalAuth(),
     puppeteer: { 
@@ -16,13 +16,13 @@ const client = new Client({
     }
 });
 
-// Replace with your actual group ID from the !groupid command
+
 const TARGET_GROUP_ID = "120363332619273755@g.us"; 
 
-// Store the bot start time to ignore old messages
+
 const BOT_START_TIME = Date.now();
 
-// Generate QR code for authentication
+
 client.on('qr', (qr) => {
     console.log('Scan this QR code with your WhatsApp:');
     qrcode.generate(qr, { small: true });
@@ -39,7 +39,6 @@ client.on('ready', () => {
     console.log(`Bot start time: ${new Date(BOT_START_TIME).toLocaleString()}`);
     console.log('Old messages will be ignored to prevent duplicate processing');
     
-    // Send a message to the target group to confirm the bot is active
     client.sendMessage(TARGET_GROUP_ID, 
         '🤖 *Anti-Promotion Bot Activated*\n\n' +
         'This bot will automatically delete ALL promotional messages, including from the bot owner.\n\n' +
@@ -56,12 +55,12 @@ client.on('ready', () => {
     });
 });
 
-// Function to detect promotional content
+
 function isPromotional(text) {
-    // Convert to lowercase for case-insensitive matching
+    
     const lowerText = text.toLowerCase();
     
-    // Define promotional keywords
+   
     const promotionalKeywords = [
         'offer', 'discount', 'sale', 'buy now', 'limited time', 
         'best price', 'click here', 'order now', 'promotion',
@@ -87,12 +86,12 @@ function isPromotional(text) {
     return hasPromotionalKeyword || hasURL || excessiveSpecialChars || hasPricePattern;
 }
 
-// Function to generate a summary using Groq LLM
+
 async function generateSummary(messages) {
     try {
-        // Format messages for the LLM
+        
         const formattedMessages = messages.map(msg => {
-            // Get sender name or number (handle different message formats)
+            
             let sender = "Unknown";
             if (msg._data && msg._data.notifyName) {
                 sender = msg._data.notifyName;
@@ -106,7 +105,7 @@ async function generateSummary(messages) {
             return `${sender}: ${content}`;
         }).join('\n');
         
-        // Create prompt for the LLM
+       
         const prompt = `Below are the last ${messages.length} messages from a WhatsApp group chat. 
 Please provide a concise summary of the main topics discussed, key points, and any decisions made.
 Focus on the most important information and ignore irrelevant chatter.
@@ -130,7 +129,7 @@ SUMMARY:`;
             top_p: 0.9
         });
 
-        // Return the generated summary
+        
         return completion.choices[0].message.content;
     } catch (error) {
         console.error('Error generating summary with Groq:', error);
@@ -138,12 +137,12 @@ SUMMARY:`;
     }
 }
 
-// Function to generate a brutal dark humor roast
+
 async function generateRoast(messages) {
     try {
-        // Format messages for the LLM
+        
         const formattedMessages = messages.map(msg => {
-            // Get sender name or number (handle different message formats)
+            
             let sender = "Unknown";
             if (msg._data && msg._data.notifyName) {
                 sender = msg._data.notifyName;
@@ -151,13 +150,13 @@ async function generateRoast(messages) {
                 sender = msg.author;
             }
             
-            // Get message content
+           
             const content = msg.body || "(media or non-text content)";
             
             return `${sender}: ${content}`;
         }).join('\n');
         
-        // Create prompt for the LLM
+      
         const prompt = `Below are the last ${messages.length} messages from a WhatsApp group chat. 
 Create a brutal, dark humor roast of this conversation and the participants. Be creative, savage, and hilarious.
 Focus on the content, conversation style, and any embarrassing or cringeworthy moments.
@@ -169,7 +168,7 @@ ${formattedMessages}
 
 BRUTAL DARK HUMOR ROAST:`;
 
-        // Call Groq API with higher temperature for more creative outputs
+        
         const completion = await groq.chat.completions.create({
             messages: [
                 {
@@ -211,7 +210,7 @@ ${formattedMessages}
 
 BRUTAL PERSONALIZED ROAST OF ${userName}:`;
 
-        // Call Groq API with higher temperature for more creative outputs
+       
         const completion = await groq.chat.completions.create({
             messages: [
                 {
@@ -225,7 +224,7 @@ BRUTAL PERSONALIZED ROAST OF ${userName}:`;
             top_p: 0.95
         });
 
-        // Return the generated roast
+        
         return completion.choices[0].message.content;
     } catch (error) {
         console.error('Error generating user roast with Groq:', error);
@@ -233,7 +232,7 @@ BRUTAL PERSONALIZED ROAST OF ${userName}:`;
     }
 }
 
-// Track commands that are currently being processed to avoid duplicates
+
 const processingCommands = new Set();
 
 // Message handler
@@ -260,22 +259,22 @@ client.on('message_create', async message => {
                 return;
             }
             
-            // Log message info
+           
             console.log(`Message in target group: ${message.body.substring(0, 30)}${message.body.length > 30 ? '...' : ''}`);
             console.log(`Is your message: ${message.fromMe ? 'Yes' : 'No'}`);
             console.log(`Message time: ${new Date(messageTime).toLocaleString()}`);
             
-            // FIRST: Handle commands - process ALL commands regardless of who sent them
+            
             if (message.body === '!groupid') {
                 try {
-                    // Mark this command as being processed
+                    
                     if (commandId) processingCommands.add(commandId);
                     
                     console.log(`Processing !groupid command from ${message.fromMe ? 'you' : 'someone else'}`);
                     await message.reply(`Group ID: ${message.from}`);
                     console.log('Sent group ID');
                     
-                    // Remove from processing set when done
+                    
                     if (commandId) processingCommands.delete(commandId);
                     return; // Exit after handling command
                 } catch (error) {
@@ -377,7 +376,7 @@ client.on('message_create', async message => {
                     
                     // Remove from processing set when done
                     if (commandId) processingCommands.delete(commandId);
-                    return; // Exit after handling command
+                    return; 
                     
                 } catch (error) {
                     console.error('Error generating roast:', error);
