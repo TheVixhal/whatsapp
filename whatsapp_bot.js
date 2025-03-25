@@ -17,7 +17,7 @@ const client = new Client({
 });
 
 
-const TARGET_GROUP_ID = "120363332619273755@g.us"; 
+const TARGET_GROUP_ID = "group-id-daalo-idhar"; 
 
 
 const BOT_START_TIME = Date.now();
